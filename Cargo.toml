@@ -1,0 +1,9 @@
+[package]
+name = "ralp"
+version = "0.1.0"
+
+
+[dependencies]
+nom = "7"
+regex = "1.5.4"
+csv = "1.1"
