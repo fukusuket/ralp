@@ -2,7 +2,7 @@
 Convert Apache access_log(combined format) to csv.
 
 ## Usage
-./ralp access_log
+TODO
 
 ## Input
 access_log([combined format](https://httpd.apache.org/docs/2.4/ja/logs.html))
