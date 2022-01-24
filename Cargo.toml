@@ -7,4 +7,5 @@ edition = "2021"
 nom = "7"
 csv = "1.1"
 chrono = "0.4"
-clap = { version = "3.0.10", features = ["derive"] }
+log = "0.4"
+simple_logger = "2.1"

@@ -1,14 +1,8 @@
 # ralp
-Apache access log(combined log format) csv parser.
-
-## Overview
-TODO
-
-## Requirement
-TODO
+Convert Apache access_log(combined format) to csv.
 
 ## Usage
-TODO
+./ralp access_log
 
-## Features
-TODO
+## Result
+
