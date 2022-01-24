@@ -27,7 +27,9 @@ fn main() -> std::io::Result<()> {
         }
     };
     let start = Instant::now();
-    let mut wtr = WriterBuilder::new().quote_style(QuoteStyle::Always).from_writer(BufWriter::new(File::create("out.csv")?));
+    let o = File::create("out.csv")?;
+    log::info!("output [{:?}].", o);
+    let mut wtr = WriterBuilder::new().quote_style(QuoteStyle::Always).from_writer(BufWriter::new(o));
     for (i, result) in BufReader::new(access_log).lines().enumerate() {
         let s = result?;
         let (s, ip) = until_space(&s).unwrap_or_default();
@@ -48,7 +50,7 @@ fn main() -> std::io::Result<()> {
         let _ = wtr.write_record(&[&t.naive_utc().to_string(), &t.to_string(), ip, method, status, bytes, url, referer, user_agent, version, u1, u2]);
     }
     let _ = wtr.flush();
-    log::info!("end. took[{:?}].", start.elapsed());
+    log::info!("end, took[{:?}].", start.elapsed());
     Ok(())
 }
 
