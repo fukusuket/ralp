@@ -1,5 +1,6 @@
 /target
 access_log
 out.csv
+./.idea
 *.xml
 *.iml
