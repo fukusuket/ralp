@@ -1,8 +1,15 @@
 # ralp
 Convert Apache access_log(combined format) to csv.
 
+## Rust version requirements
+
+Rustc version 1.57.0 or greater.
+
 ## Usage
-TODO
+
+1. git clone https://github.com/fukusuket/ralp.git
+2. cd ralp
+3. cargo run access_log
 
 ## Input
 access_log([combined format](https://httpd.apache.org/docs/2.4/ja/logs.html))
