@@ -11,6 +11,8 @@ Rustc version 1.57.0 or greater.
 2. cd ralp
 3. cargo run access_log
 
+then output the converted csv to the current directory.
+
 ## Input
 access_log([combined format](https://httpd.apache.org/docs/2.4/ja/logs.html))
 ```
