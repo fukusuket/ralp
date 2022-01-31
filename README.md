@@ -9,7 +9,7 @@ Rustc version 1.57.0 or greater.
 
 1. git clone https://github.com/fukusuket/ralp.git
 2. cd ralp
-3. cargo run access_log
+3. cargo run -- access_log
 
 then output the converted csv to the current directory.
 
