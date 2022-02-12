@@ -1,9 +1,9 @@
 # ralp
 Convert Apache access_log(combined format) to csv.
 
-## Rust version requirements
+## Requirements
 
-Rustc version 1.57.0 or greater.
+Rustc version 1.56.0 or greater.
 
 ## Usage
 
