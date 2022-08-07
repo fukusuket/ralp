@@ -1,4 +1,4 @@
-name: Publish
+name: Build
 
 on:
   push:
@@ -6,30 +6,100 @@ on:
       - '*'
 
 jobs:
-  publish:
-    name: Publish for ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
+  build:
+    name: release
     strategy:
       matrix:
+        target:
+          - x86_64-unknown-linux-musl
+          - x86_64-pc-windows-msvc
+          - x86_64-apple-darwin
         include:
-          - os: ubuntu-latest
-            artifact_name: ralp
-            asset_name: ralp-linux-amd64
-          - os: windows-latest
-            artifact_name: ralp.exe
-            asset_name: ralp-windows-amd64
-          - os: macos-latest
-            artifact_name: ralp
-            asset_name: ralp-macos-amd64
-
+          - target: x86_64-unknown-linux-musl
+            os: ubuntu-latest
+          - target: x86_64-pc-windows-msvc
+            os: windows-latest
+          - target: x86_64-apple-darwin
+            os: macos-latest
+    runs-on: ${{ matrix.os }}
     steps:
+      - run: git config --global http.postBuffer 157286400
+      - name: Install musl tools
+        if: matrix.target == 'x86_64-unknown-linux-musl'
+        run: |
+          sudo apt install -qq -y musl-tools --no-install-recommends
       - uses: actions/checkout@v2
-      - name: Build
-        run: cargo build --release --locked
-      - name: Upload binaries to release
-        uses: svenstaro/upload-release-action@v2
+      - uses: actions-rs/toolchain@v1
         with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: target/release/${{ matrix.artifact_name }}
-          asset_name: ${{ matrix.asset_name }}
-          tag: ${{ github.ref }}
+          profile: minimal
+          toolchain: stable
+          target: ${{ matrix.target }}
+          override: true
+      - uses: actions-rs/cargo@v1
+        with:
+          command: build
+          args: --release
+      - name: Package for linux-musl
+        if: matrix.target == 'x86_64-unknown-linux-musl'
+        run: |
+          zip --junk-paths ${{ matrix.target }} target/release/ralp
+      - name: Package for windows
+        if: matrix.target == 'x86_64-pc-windows-msvc'
+        run: |
+          powershell Compress-Archive -Path target/release/ralp.exe -DestinationPath ${{ matrix.target }}.zip
+      - name: Package for macOS
+        if: matrix.target == 'x86_64-apple-darwin'
+        run: |
+          zip --junk-paths ${{ matrix.target }} target/release/ralp
+      - uses: actions/upload-artifact@v2
+        with:
+          name: build-${{ matrix.target }}
+          path: ${{ matrix.target }}.zip
+
+  create-release:
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+      - id: create-release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: true
+      - run: |
+          echo '${{ steps.create-release.outputs.upload_url }}' > release_upload_url.txt
+      - uses: actions/upload-artifact@v1
+        with:
+          name: create-release
+          path: release_upload_url.txt
+
+  upload-release:
+    strategy:
+      matrix:
+        target:
+          - x86_64-unknown-linux-musl
+          - x86_64-pc-windows-msvc
+          - x86_64-apple-darwin
+    needs: [create-release]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v1
+        with:
+          name: create-release
+      - id: upload-url
+        run: |
+          echo "::set-output name=url::$(cat create-release/release_upload_url.txt)"
+      - uses: actions/download-artifact@v1
+        with:
+          name: build-${{ matrix.target }}
+      - uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.upload-url.outputs.url }}
+          asset_path: ./build-${{ matrix.target }}/${{ matrix.target }}.zip
+          asset_name: ${{ matrix.target }}.zip
+          asset_content_type: application/zip
