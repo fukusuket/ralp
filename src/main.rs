@@ -30,6 +30,7 @@ fn main() -> std::io::Result<()> {
     let o = File::create("out.csv")?;
     log::info!("output [{:?}].", o);
     let mut wtr = WriterBuilder::new().quote_style(QuoteStyle::Always).from_writer(BufWriter::new(o));
+    let _ = wtr.write_record(&["time(utc)", "time(local)", "remote_host", "http_method", "http_status", "bytes", "request_url", "referer", "user_agent", "http_version", "remote log name", "remote user"]);
     for (i, result) in BufReader::new(access_log).lines().enumerate() {
         let s = result?;
         let (s, ip) = until_space(&s).unwrap_or_default();
@@ -44,9 +45,6 @@ fn main() -> std::io::Result<()> {
         let (s, bytes) = until_space(&s[1..]).unwrap_or_default();
         let (s, referer) = extract('"', &s[1..], '"').unwrap_or_default();
         let (_, user_agent) = extract('"', &s[1..], '"').unwrap_or_default();
-        if i == 0 {
-            let _ = wtr.write_record(&["time(utc)", "time(local)", "remote_host", "http_method", "http_status", "bytes", "request_url", "referer", "user_agent", "http_version", "remote log name", "remote user"]);
-        }
         let _ = wtr.write_record(&[&t.naive_utc().to_string(), &t.to_string(), ip, method, status, bytes, url, referer, user_agent, version, u1, u2]);
     }
     let _ = wtr.flush();

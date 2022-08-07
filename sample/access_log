@@ -1,0 +1,2 @@
+192.168.0.1 - - [27/Dec/2021:13:48:47 +0900] "GET /foo/index.html HTTP/2.0" 200 1245 "https://example.com" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36"                                              |
+192.168.0.1 - - [27/Dec/2021:13:48:47 +0900] "GET /bar HTTP/2.0" 200 89521 "https://example.com" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36"                                                                  |
