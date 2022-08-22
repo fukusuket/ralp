@@ -1,17 +1,25 @@
 # ralp
 Convert Apache access_log(combined format) to csv.
 
-## Requirements
-
-Rustc version 1.56.0 or greater.
-
 ## Usage
+```
+USAGE:
+    ralp --access-log <ACCESS_LOG> --output-csv <OUTPUT_CSV>
 
+OPTIONS:
+    -a, --access-log <ACCESS_LOG>    Input Apache access log file
+    -o, --output-csv <OUTPUT_CSV>    Output csv file
+    -h, --help                       Print help information
+```
+
+## How to use([from release](https://github.com/fukusuket/ralp/releases))
+1. Download zip [from release](https://github.com/fukusuket/ralp/releases), and unzip.
+2. ./ralp -a access_log -o output.csv
+
+## How to use(from source)
 1. git clone https://github.com/fukusuket/ralp.git
 2. cd ralp
-3. cargo run -- access_log
-
-then output the converted csv to the current directory.
+3. cargo run -- -a access_log -o output.csv
 
 ## Input
 access_log([combined format](https://httpd.apache.org/docs/2.4/ja/logs.html))

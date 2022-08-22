@@ -1,6 +1,6 @@
 [package]
 name = "ralp"
-version = "0.1.0"
+version = "0.0.2"
 edition = "2021"
 
 [dependencies]
@@ -9,3 +9,4 @@ csv = "1.1"
 chrono = "0.4"
 log = "0.4"
 simple_logger = "2.1"
+clap = { version = "3.2.11", features = ["derive"] }
