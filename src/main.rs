@@ -32,7 +32,7 @@ fn main() -> std::io::Result<()> {
     let access_log = match File::open(&args.access_log) {
         Ok(f) => { f }
         Err(_) => {
-            log::error!("failed to open[{:?}]", &args.access_log);
+            log::error!("failed to open.");
             panic!("please set valid access_log path.")
         }
     };
